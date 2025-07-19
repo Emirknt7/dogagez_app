@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter_application_1/sayfalar/ayarlar.dart';
 import 'package:flutter_application_1/sayfalar/profile_edit.dart';
 import 'package:flutter_application_1/services/api_service.dart'; // API servis import
@@ -47,7 +49,7 @@ class _ProfilePageState extends State<ProfilePage> {
       });
 
       final user = await ApiService().getProfile();
-      
+
       setState(() {
         currentUser = user;
         isLoading = false;
@@ -109,7 +111,7 @@ class _ProfilePageState extends State<ProfilePage> {
         );
 
         await ApiService().logout();
-        
+
         // Loading kapat ve login sayfasına yönlendir
         Navigator.of(context).pop(); // Loading dialog'unu kapat
         _redirectToLogin();
@@ -117,18 +119,31 @@ class _ProfilePageState extends State<ProfilePage> {
     } catch (e) {
       // Loading dialog'unu kapat
       Navigator.of(context).pop();
-      
+
       String message = 'Çıkış yapılırken hata oluştu';
       if (e is ApiException) {
         message = e.message;
       }
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(message),
           backgroundColor: Colors.red,
         ),
       );
+    }
+  }
+
+  //profil fotosu
+  File? _image;
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
     }
   }
 
@@ -187,22 +202,50 @@ class _ProfilePageState extends State<ProfilePage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               SizedBox(height: 20),
-                              // Profil resmi
-                              CircleAvatar(
-                                radius: 50,
-                                backgroundImage: NetworkImage(
-                                  currentUser?.profileImage ?? 
-                                  'https://i.pravatar.cc/150?img=47'
-                                ),
-                                onBackgroundImageError: (exception, stackTrace) {
-                                  print('Profil resmi yüklenemedi: $exception');
-                                },
-                                child: currentUser?.profileImage == null
-                                    ? Icon(Icons.person, size: 50)
-                                    : null,
+
+                              Stack(
+                                alignment: Alignment.bottomRight,
+                                children: [
+                                  CircleAvatar(
+                                    radius: 90,
+                                    backgroundColor: Colors.grey.shade300,
+                                    backgroundImage: _image != null
+                                        ? FileImage(_image!)
+                                        : AssetImage('assets/profil.jpeg')
+                                            as ImageProvider,
+                                    onBackgroundImageError:
+                                        (exception, stackTrace) {
+                                      print(
+                                          'Profil resmi yüklenemedi: $exception');
+                                    },
+                                    child: currentUser?.profileImage == null
+                                        ? Icon(Icons.person, size: 50)
+                                        : null,
+                                  ),
+                                  Positioned(
+                                    bottom: 0,
+                                    left: 120,
+                                    child: SizedBox(
+                                      width: 50,
+                                      height: 50,
+                                      child: ElevatedButton(
+                                        onPressed: pickImage,
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.white,
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 10,
+                                          ),
+                                        ),
+                                        child: Icon(Icons.edit,
+                                            size: 32, color: Colors.black),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                               SizedBox(height: 10),
-                              
+
                               // Kullanıcı adı
                               Text(
                                 currentUser?.name ?? 'Kullanıcı',
@@ -212,7 +255,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               ),
                               SizedBox(height: 5),
-                              
+
                               // Email
                               Text(
                                 currentUser?.email ?? 'email@example.com',
@@ -222,7 +265,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               ),
                               SizedBox(height: 5),
-                              
+
                               // Username
                               Text(
                                 '@${currentUser?.username ?? 'username'}',
@@ -231,35 +274,36 @@ class _ProfilePageState extends State<ProfilePage> {
                                   color: Colors.grey[500],
                                 ),
                               ),
-                              
+
                               SizedBox(height: 30),
-                              
+
                               // Profili düzenle
                               ListTile(
                                 leading: Icon(Icons.person),
                                 title: Text('Profili düzenle'),
-                                trailing: Icon(Icons.arrow_forward_ios, size: 16),
+                                trailing:
+                                    Icon(Icons.arrow_forward_ios, size: 16),
                                 onTap: () async {
                                   final result = await Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => ProfilePageEdit(
-                                      ),
+                                      builder: (context) => ProfilePageEdit(),
                                     ),
                                   );
-                                  
+
                                   // Profil düzenleme sayfasından dönünce profili yenile
                                   if (result == true) {
                                     _loadUserProfile();
                                   }
                                 },
                               ),
-                              
+
                               // Ayarlar
                               ListTile(
                                 leading: Icon(Icons.settings),
                                 title: Text('Ayarlar'),
-                                trailing: Icon(Icons.arrow_forward_ios, size: 16),
+                                trailing:
+                                    Icon(Icons.arrow_forward_ios, size: 16),
                                 onTap: () {
                                   Navigator.push(
                                     context,
@@ -269,19 +313,20 @@ class _ProfilePageState extends State<ProfilePage> {
                                   );
                                 },
                               ),
-                              
+
                               // Hesap bilgileri
                               ListTile(
                                 leading: Icon(Icons.info_outline),
                                 title: Text('Hesap Bilgileri'),
-                                trailing: Icon(Icons.arrow_forward_ios, size: 16),
+                                trailing:
+                                    Icon(Icons.arrow_forward_ios, size: 16),
                                 onTap: () {
                                   _showAccountInfo();
                                 },
                               ),
-                              
+
                               Divider(height: 32),
-                              
+
                               // Çıkış yap
                               ListTile(
                                 leading: Icon(Icons.logout, color: Colors.red),
@@ -314,11 +359,10 @@ class _ProfilePageState extends State<ProfilePage> {
             _buildInfoRow('Ad', currentUser?.name ?? ''),
             _buildInfoRow('Kullanıcı Adı', currentUser?.username ?? ''),
             _buildInfoRow('E-posta', currentUser?.email ?? ''),
-            _buildInfoRow('Hesap Durumu', currentUser?.isActive == true ? 'Aktif' : 'Pasif'),
-            _buildInfoRow(
-              'Üyelik Tarihi', 
-              currentUser?.createdAt.toString().split(' ')[0] ?? ''
-            ),
+            _buildInfoRow('Hesap Durumu',
+                currentUser?.isActive == true ? 'Aktif' : 'Pasif'),
+            _buildInfoRow('Üyelik Tarihi',
+                currentUser?.createdAt.toString().split(' ')[0] ?? ''),
           ],
         ),
         actions: [
