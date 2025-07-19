@@ -21,7 +21,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class LoginPage extends StatefulWidget { // StatefulWidget'a çevrildi
+class LoginPage extends StatefulWidget {
+  // StatefulWidget'a çevrildi
   const LoginPage({super.key});
 
   @override
@@ -30,9 +31,12 @@ class LoginPage extends StatefulWidget { // StatefulWidget'a çevrildi
 
 class _LoginPageState extends State<LoginPage> {
   final ApiService _apiService = ApiService(); // ApiService instance
-  final TextEditingController _usernameController = TextEditingController(); // Controller eklendi
-  final TextEditingController _emailController = TextEditingController(); // Controller eklendi
-  final TextEditingController _passwordController = TextEditingController(); // Controller eklendi
+  final TextEditingController _usernameController =
+      TextEditingController(); // Controller eklendi
+  final TextEditingController _emailController =
+      TextEditingController(); // Controller eklendi
+  final TextEditingController _passwordController =
+      TextEditingController(); // Controller eklendi
   bool _isLoading = false; // Loading state eklendi
 
   // Giriş yap fonksiyonu
@@ -78,10 +82,11 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return MaterialApp(
+        home: Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        child:SingleChildScrollView(
+        child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 30),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -97,7 +102,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(height: 30),
-
               TextField(
                 controller: _usernameController, // Controller eklendi
                 decoration: InputDecoration(
@@ -108,7 +112,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(height: 15),
-
               TextField(
                 controller: _emailController, // Controller eklendi
                 decoration: InputDecoration(
@@ -119,7 +122,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(height: 15),
-
               TextField(
                 controller: _passwordController, // Controller eklendi
                 obscureText: true,
@@ -131,7 +133,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               SizedBox(height: 25),
-
               Container(
                 child: Column(
                   children: [
@@ -139,7 +140,9 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ElevatedButton(
-                          onPressed: _isLoading ? null : _login, // ApiService giriş fonksiyonu
+                          onPressed: _isLoading
+                              ? null
+                              : _login, // ApiService giriş fonksiyonu
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green[900],
                             padding: EdgeInsets.symmetric(
@@ -147,12 +150,13 @@ class _LoginPageState extends State<LoginPage> {
                               vertical: 12,
                             ),
                           ),
-                          child: _isLoading 
-                            ? CircularProgressIndicator(color: Colors.white) // Loading göstergesi
-                            : Text(
-                                'Giriş Yap',
-                                style: TextStyle(color: Colors.white),
-                              ),
+                          child: _isLoading
+                              ? CircularProgressIndicator(
+                                  color: Colors.white) // Loading göstergesi
+                              : Text(
+                                  'Giriş Yap',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                         ),
                         ElevatedButton(
                           onPressed: () {
@@ -162,7 +166,6 @@ class _LoginPageState extends State<LoginPage> {
                                 builder: (context) => RegisterPage(),
                               ),
                             );
-
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green[900],
@@ -179,7 +182,6 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                     SizedBox(height: 16),
-
                     TextButton(
                       onPressed: () {
                         Navigator.push(
@@ -189,7 +191,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         );
                       },
-                      child:Text(
+                      child: Text(
                         'şifremi unuttum',
                         style: TextStyle(color: Colors.blueAccent),
                       ),
@@ -201,7 +203,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
-    );
+    ));
   }
 
   @override

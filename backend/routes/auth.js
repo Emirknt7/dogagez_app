@@ -4,12 +4,12 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
-const { 
-  registerValidation, 
-  loginValidation, 
+const {
+  registerValidation,
+  loginValidation,
   resetPasswordValidation,
   newPasswordValidation,
-  handleValidationErrors 
+  handleValidationErrors
 } = require('../middleware/validation');
 const { successResponse, errorResponse } = require('../utils/response');
 
@@ -108,12 +108,12 @@ router.post('/forgot-password', resetPasswordValidation, handleValidationErrors,
 
     // Reset token oluştur
     const resetToken = crypto.randomBytes(20).toString('hex');
-    
+
     user.resetPasswordToken = crypto
       .createHash('sha256')
       .update(resetToken)
       .digest('hex');
-    
+
     user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 dakika
 
     await user.save();

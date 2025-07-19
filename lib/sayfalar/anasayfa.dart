@@ -54,28 +54,31 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _pages[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.black45,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
-        ],
+    return MaterialApp(
+      home: Scaffold(
+        body: _pages[_currentIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _currentIndex,
+          selectedItemColor: Colors.black,
+          unselectedItemColor: Colors.black45,
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          items: [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
+            BottomNavigationBarItem(icon: Icon(Icons.search), label: ''),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
+          ],
+        ),
       ),
     );
   }
 }
 
-class HomeContent extends StatefulWidget { // StatelessWidget -> StatefulWidget yap
+class HomeContent extends StatefulWidget {
+  // StatelessWidget -> StatefulWidget yap
   @override
   State<HomeContent> createState() => _HomeContentState();
 }
@@ -125,8 +128,9 @@ class _HomeContentState extends State<HomeContent> {
                 ),
               ),
             ),
-          
-          Text("Anasayfa",
+
+          Text(
+            "Anasayfa",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 24,
